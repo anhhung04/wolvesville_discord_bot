@@ -18,11 +18,9 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
-                let prMess = message.channel.send(roleGame[i]);
-                let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+                prMess = await message.channel.send(roleGame[i]);
+                mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
                 
-                message.delete();
-                prMess.delete();
                 return mess.delete();
             };
 

@@ -48,7 +48,6 @@ module.exports={
                 }
                 break;
             }case 1:{
-                let roleGame = await DB.get('prRole');
                 let players = await DB.get('players');
                 let playersID = await DB.get('playersID');
                 
@@ -99,7 +98,7 @@ module.exports={
                 await DB.update('players', players);
                 await DB.update('playersID', playersID);
                 await DB.update('die', []);
-    
+                 
                 setTimeout(async function(){
                     let message = await msg.channel.send('vote_time');
                     message.delete();

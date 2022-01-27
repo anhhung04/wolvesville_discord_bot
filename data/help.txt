@@ -1,0 +1,16 @@
+- start [@....]: start game
+
+- ar: add role
+
+- cr: check roles
+
+- rr: remove role
+
+- rrall: remove all roles
+
+- next: next day
+ 
+- next_turn: skip your turn
+
+- end: end game
+
