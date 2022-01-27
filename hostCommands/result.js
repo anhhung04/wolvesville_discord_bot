@@ -47,7 +47,9 @@ module.exports={
         let personDie = mode(vote);
 
         if(personDie==='pass'){
-            return;
+            let mess1 = await msg.channel.send(`next`);
+            
+            return mess1.delete();
         }
 
         let index = players.indexOf(personDie);
