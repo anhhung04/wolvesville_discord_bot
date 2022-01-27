@@ -35,6 +35,8 @@ module.exports={
             }
         }
          
-        sendReactCollector(client, msg.channel, `Who does ${roles['🔫']} want to shoot?`, fields, reactContent, userIds,callBack, false);     
+        sendReactCollector(client, msg.channel, `Who does ${roles['🔫']} want to shoot?`, fields, reactContent, userIds,callBack, false); 
+        
+        killPerson(userIds[0]);
     }
 }
