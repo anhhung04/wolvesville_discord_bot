@@ -18,11 +18,11 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
-                message.channel.send(roleGame[i]);
+                let prMess = message.channel.send(roleGame[i]);
+                let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
                 
-                let channel = await client.channels.cache.get(process.env.HOST_ID);
-                let mess = await channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-                
+                message.delete();
+                prMess.delete();
                 return mess.delete();
             };
 
@@ -36,8 +36,8 @@ module.exports={
         callBack['❎']= async (message, react, user, collector)=>{
             let channel = await client.channels.cache.get(process.env.HOST_ID);
             let mess = await channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-            
             message.delete();
+            mess.delete();
         };
 
         if(userIds.length===0){

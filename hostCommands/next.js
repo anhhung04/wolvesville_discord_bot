@@ -46,6 +46,7 @@ module.exports={
                         break;
                     }
                 }
+                break;
             }case 1:{
                 let roleGame = await DB.get('prRole');
                 let players = await DB.get('players');
