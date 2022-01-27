@@ -2,7 +2,7 @@ const {MessageEmbed} = require('discord.js');
 const DB = require('../features/interactWithDB.js');
 
 module.exports={
-    name: 'ready',
+    name: 'ready_for_it',
     execute: async function(client, msg){
         var numReady = 0;
         const playersID = await DB.get('playersID');

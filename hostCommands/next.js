@@ -1,7 +1,6 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const dayNight = require('../config.js').dayNight;
-const {MessageEmbed} = require('discord.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
 
 function mode(array)
@@ -29,86 +28,84 @@ function mode(array)
 module.exports={
     name: 'next',
     execute: async function (client, msg){
-        const dayData = await DB.get('day');
+        const dayDataArr = await DB.getObjectData('day');
+        const dayData = dayDataArr[0];
         const roleGame = await DB.get('prRole');
-        var role = await DB.get('role');
-        var day = Number(dayData[0]);
-        var dayOrNight = Number(dayData[1]);
-        var playersID = await DB.get('playersID');
-        var numsWolf = 0;
-
-        for(let i=0; i< role.length;i++){
-            if(role[i]==='🐺') numsWolf++;
-        }
+        var day = dayData.index;
+        var dayOrNight = dayData.dayNight;
+        var index = Object.keys(roles);
 
         sendReactCollector(client, msg.channel, `${dayNight[dayOrNight]} ${day}`);
 
         switch(dayOrNight){
             case 0: {
-                if(await roleGame.includes('🛡️')){
-                    let fields = [];
-                    let reactContent =[];
-                    let userId = playersID[roleGame.indexOf('🛡️')];
-                    let callBack = {};
-                    
-                    for(let i=0; i< playersID.length;i++){
-                        let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
-                        let nickname = msg.guild.members.cache.get(playersID[i]).nickname;
-                        fields.push({
-                            name: `\[.${i+1}.\]`,
-                            value: nickname,
-                            inline: true
-                        });
-
-                        reactContent.push(emoji);
-
-                        callBack[emoji.name] =  async (message, react, user)=>{
-                            await DB.update('shield', [playersID[i]]);
-                            
-                            return message.delete();
-                        };
+                for(let i=0; i< index.length;i++){
+                    if(roleGame.includes(index[i])){
+                        let message = await msg.channel.send(`${roles[index[i]].toLowerCase()}_turn`);
+                        message.delete();
+                        break;
                     }
-                    
-                    sendReactCollector(client, msg.channel, 'Who does bodyguard want to protect tonight?', fields, reactContent, userId,callBack, false);
                 }
-                if(await roleGame.includes('🐺')){
-                    let fields = [];
-                    let reactContent =[];
-                    let userId = playersID[roleGame.indexOf('🐺')];
-                    let callBack = {};
-                    
-                    for(let i=0; i< playersID.length;i++){
-                        let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
-                        let nickname = msg.guild.members.cache.get(playersID[i]).nickname;
-                        fields.push({
-                            name: `\[.${i+1}.\]`,
-                            value: nickname,
-                            inline: true
-                        });
+            }case 1:{
+                let roleGame = await DB.get('prRole');
+                let players = await DB.get('players');
+                let playersID = await DB.get('playersID');
+                
+                let die = await DB.get('die');
+                
+                let shieldArr = await DB.getObjectData('shield');
+                let shield = shieldArr[0].shield;
 
-                        reactContent.push(emoji);
+                let Fields = [];
+                let numsWolf = 0;
+    
+                for(let i=0; i< roleGame.length;i++){
+                    if(roleGame[i]==='🐺') numsWolf++;
+                }
 
-                        callBack[emoji.name] =  async (message, react, user)=>{
-                            let box = await DB.get('die');
-                            box.push(playersID[i]);
-                            if(box.length >= numsWolf){
-                                await DB.update('die', [`${mode(box)}`]);
-                                return message.delete();
-                            }else{
-                                await DB.update('die', box);
-                            }
-                        }
+                for(let i=0; i< die.length;i++){
+                    if(!die[i]===shield){
+                        let index = players.indexOf(die[i]);
+                        roleGame.splice(index,1);
+                        playersID.splice(index, 1);
+                        players.splice(index,1);
+                        msg.channel.send(`${die[i]}  was dead`);
                     }
-                    
-                    sendReactCollector(client, msg.channel, 'Who do were wolves want to kill tonight?', fields, reactContent, userId,callBack, false);
-                    
-
                 }
+    
+                if(numsWolf>= players.length/2){
+                    let mess1 = await msg.channel.send('end');
+                    mess1.delete();
+
+                    return msg.channel.send('The werewolves win!');
+                }else if(numsWolf===0){
+                    let mess2 = await msg.channel.send('end');
+                    mess2.delete();
+
+                    return msg.channel.send('The villagers win!');
+                }
+    
+                for(let i = 0; i < players.length; i){
+                    Fields.push({
+                        name: `\[.${i+1}.\]`,
+                        value: players[i],
+                        inline: true
+                    });
+                }
+    
+                await DB.update('prRole',roleGame);
+                await DB.updateObjectData('fields', Fields);
+                await DB.update('players', players);
+                await DB.update('playersID', playersID);
+                await DB.update('die', []);
+    
+                setTimeout(async function(){
+                    let message = await msg.channel.send('vote_time');
+                    message.delete();
+                }, 120000);
+    
+                break;
             }
         }
-
-        
-        
-
     }
 };
