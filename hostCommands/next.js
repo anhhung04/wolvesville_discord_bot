@@ -102,7 +102,7 @@ module.exports={
                 setTimeout(async function(){
                     let message = await msg.channel.send('vote_time');
                     message.delete();
-                }, 120000);
+                }, 3000);
     
                 break;
             }

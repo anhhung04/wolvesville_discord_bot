@@ -7,6 +7,7 @@ module.exports={
         var playersID = await DB.get('playersID');
         var players = await DB.get('players');
         var Fields =  await DB.getObjectData('fields');
+        var reactContent = [];
 
         for(let i=0; i< playersID.length;i++){
             let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
@@ -15,8 +16,8 @@ module.exports={
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
                 let boxVote = await DB.get('vote');
-                box.push(fields[i].value);
-                if(box.length===players.length){
+                boxVote.push(fields[i].value);
+                if(boxVote.length===players.length){
                     collector.stop('result');
                     message.delete();
                 }
@@ -28,15 +29,15 @@ module.exports={
 
         callBack['⏭️'] =  async (message, react, user, collector)=>{
             let boxVote = await DB.get('vote');
-            box.push('pass');
-            if(box.length===players.length){
+            boxVote.push('pass');
+            if(boxVote.length===players.length){
                 collector.stop('result');
-                message.delete();
+                return message.delete();
             }
             await DB.update('vote', boxVote);
         };
-        
-        await sendReactCollector(client, msg.channel, `Vote:`, Fields, reactContent, userIds,callBack, false);
+         
+        sendReactCollector(client, msg.channel, `Vote:`, Fields, reactContent, userIds,callBack, false);
 
     }
 }

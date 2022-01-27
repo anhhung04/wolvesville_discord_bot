@@ -32,7 +32,6 @@ module.exports={
         let callBack = {};
         var numsWolf = 0;
         let fields = await DB.getObjectData('fields');
-        let role = await DB.get('role');
         let playersID = await DB.get('playersID');
         let roleGame = await DB.get('prRole');
 
@@ -61,7 +60,7 @@ module.exports={
                 userIds.push(playersID[i]);
             }
         }
-        
-        await sendReactCollector(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, reactContent, userIds,callBack, false);     
+         
+        sendReactCollector(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, reactContent, userIds,callBack, false);     
     }
 }

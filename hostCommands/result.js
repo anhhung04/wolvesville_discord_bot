@@ -45,6 +45,8 @@ module.exports={
 
         let index = players.indexOf(personDie);
 
+        let roleDie = role[index];
+
         playersID.splice(index,1);
         players.splice(index,1);
         role.splice(index,1);
@@ -62,6 +64,7 @@ module.exports={
         
         await DB.update('day', {index: day.index+=day.dayNight, dayNight: (day.dayNight+1)%2});
         await DB.update('die', []);
+        await DB.update('vote', []);
         await DB.updateObjectData('shield', [{}]);
         await DB.updateObjectData('die', [{}]);
         await DB.update('playersID', playersID);
@@ -70,6 +73,11 @@ module.exports={
         await DB.updateObjectData('fields', Fields);
         
         sendReactCollector(client, msg.channel, `${personDie} was dead`);
+
+        if(roleDie === '🔫') {
+            let messGun = await msg.channel.send('gunner_turn');
+            messGun.delete();
+        }
 
         let mess = await msg.channel.send(`next`);
             
