@@ -18,7 +18,7 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
-                await DB.updateObjectData('shield', [{shield:fields[i].value}]);
+                await DB.updateObjectData('shield', [fields[i].value]);
                 collector.stop(`next_turn ${roles['🛡️'].toLowerCase()}`);
                 
                 return message.delete();

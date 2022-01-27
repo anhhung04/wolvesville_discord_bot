@@ -50,7 +50,7 @@ module.exports={
                 if(box.length >= numsWolf){
                     await DB.update('die', [mode(box)]);
                     collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
-                    message.delete();
+                    return message.delete();
                 }else{
                     await DB.update('die', box);
                 }

@@ -7,7 +7,7 @@ module.exports={
         await DB.updateObjectData('isGameStarted',[{isGameStarted:false}]);
         await DB.updateObjectData('day',[{index:1, dayNight:0}]);
         const embed = new MessageEmbed();
-        embed.setTitle("----------End---------- ");
+        embed.setTitle("-------------------------------End------------------------------- ");
         embed.setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
         embed.setTimestamp(); 
    

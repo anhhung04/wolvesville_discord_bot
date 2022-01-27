@@ -35,7 +35,7 @@ module.exports={
             let channel = await client.channels.cache.get(process.env.HOST_ID);
             let mess = await channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
             message.delete();
-            mess.delete();
+            return mess.delete();
         };
 
         if(userIds.length===0){

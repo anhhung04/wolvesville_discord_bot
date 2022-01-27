@@ -1,5 +1,6 @@
 const DB = require('../features/interactWithDB.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
+const killPerson = require('../features/killPerson.js');
 
 function mode(array)
 {
@@ -34,51 +35,35 @@ module.exports={
     name: 'result',
     execute: async function(client, msg){
         var vote = await DB.get('vote');
-        var playersID = await DB.get('playersID');
         var players = await DB.get('players');
-        var Fields =  [];
         var role = await DB.get('prRole');
+        var dayO = await DB.getObjectData('day');
+        var day = dayO[0];
+        var indexDay = day.index;
+        var dayNightDay = day.dayNight;
         
         shuffledCards(vote);
 
         let personDie = mode(vote);
 
         let index = players.indexOf(personDie);
-
+        
         let roleDie = role[index];
-
-        playersID.splice(index,1);
-        players.splice(index,1);
-        role.splice(index,1);
         
-        for(let i = 0; i < players.length; i){
-            Fields.push({
-                name: `\[.${i+1}.\]`,
-                value: players[i],
-                inline: true
-            });
-        }
-        
-        var dayO = await DB.getObjectData('day');
-        var day = dayO[0];
-        
-        await DB.update('day', {index: day.index+=day.dayNight, dayNight: (day.dayNight+1)%2});
-        await DB.update('die', []);
-        await DB.update('vote', []);
-        await DB.updateObjectData('shield', [{}]);
-        await DB.updateObjectData('die', [{}]);
-        await DB.update('playersID', playersID);
-        await DB.update('players', players);
-        await DB.update('prRole', role);
-        await DB.updateObjectData('fields', Fields);
+        killPerson(personDie);
         
         sendReactCollector(client, msg.channel, `${personDie} was dead`);
 
         if(roleDie === '🔫') {
             let messGun = await msg.channel.send('gunner_turn');
-            messGun.delete();
+            return messGun.delete();
         }
+        let newIndex = indexDay + dayNightDay;
+        let newDayNight = (dayNightDay+1)%2;
 
+        await DB.updateObjectData('day', [{index: newIndex, dayNight: newDayNight}]);
+        await DB.update('vote', []);
+        
         let mess = await msg.channel.send(`next`);
             
         return mess.delete();

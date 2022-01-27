@@ -30,18 +30,18 @@ module.exports={
     execute: async function (client, msg){
         const dayDataArr = await DB.getObjectData('day');
         const dayData = dayDataArr[0];
-        const roleGame = await DB.get('prRole');
+        var roleGame = await DB.get('prRole');
         var day = dayData.index;
         var dayOrNight = dayData.dayNight;
-        var index = Object.keys(roles);
+        var indexRole = Object.keys(roles);
 
         sendReactCollector(client, msg.channel, `${dayNight[dayOrNight]} ${day}`);
 
         switch(dayOrNight){
             case 0: {
-                for(let i=0; i< index.length;i++){
+                for(let i=0; i< indexRole.length;i++){
                     if(roleGame.includes(index[i])){
-                        let message = await msg.channel.send(`${roles[index[i]].toLowerCase()}_turn`);
+                        let message = await msg.channel.send(`${roles[indexRole[i]].toLowerCase()}_turn`);
                         message.delete();
                         break;
                     }
@@ -53,8 +53,8 @@ module.exports={
                 
                 let die = await DB.get('die');
                 
-                let shieldArr = await DB.getObjectData('shield');
-                let shield = shieldArr[0].shield;
+                let shieldArr = await DB.get('shield');
+                let shield = shieldArr[0];
 
                 let Fields = [];
                 let numsWolf = 0;
@@ -72,7 +72,7 @@ module.exports={
                         msg.channel.send(`${die[i]}  was dead`);
                     }
                 }
-    
+                
                 if(numsWolf>= players.length/2){
                     let mess1 = await msg.channel.send('end');
                     mess1.delete();
@@ -84,26 +84,23 @@ module.exports={
 
                     return msg.channel.send('The villagers win!');
                 }
-    
-                for(let i = 0; i < players.length; i){
+
+                for(let i = 0; i < players.length; i++){
                     Fields.push({
                         name: `\[.${i+1}.\]`,
                         value: players[i],
                         inline: true
                     });
                 }
-    
+
                 await DB.update('prRole',roleGame);
                 await DB.updateObjectData('fields', Fields);
                 await DB.update('players', players);
                 await DB.update('playersID', playersID);
-                await DB.update('die', []);
                  
-                setTimeout(async function(){
-                    let message = await msg.channel.send('vote_time');
-                    message.delete();
-                }, 3000);
-    
+                setTimeout(()=>{
+                    msg.channel.send('vote_time');
+                },120000);
                 break;
             }
         }

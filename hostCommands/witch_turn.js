@@ -48,9 +48,9 @@ module.exports={
             sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, [{name: '[.1.]', value: die[0], inline: true}], ['👍', '👎'], userIds, {
                 '👍': async (message, react, user, collector)=>{
                     await DB.update('die',[]);
-                    message.delete();
+                    return message.delete();
                 },'👎':async (message, react, user, collector)=>{
-                    message.delete();
+                    return message.delete();
                 }
             }, false);
         }

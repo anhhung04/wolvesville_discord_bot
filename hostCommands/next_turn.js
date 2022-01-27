@@ -20,10 +20,10 @@ module.exports={
         
         if(nextIndex === indexV.indexOf('villager')){
 
-            await DB.updateObjectData('day', {index: day.index+=day.dayNight, dayNight: (day.dayNight+1)%2});
-            await DB.update('die', []);
-            await DB.updateObjectData('shield', [{}]);
-            await DB.updateObjectData('die', [{}]);
+            await DB.updateObjectData('day', [{index: day.index+=day.dayNight, dayNight: (day.dayNight+1)%2}]);
+            // await DB.update('die', []);
+            // await DB.updateObjectData('shield', [{}]);
+            // await DB.updateObjectData('die', [{}]);
             
             let mess = await msg.channel.send(`next`);
             
