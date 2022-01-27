@@ -25,7 +25,6 @@ module.exports = async function(username){
         await DB.update('players', players);
         await DB.update('prRole', role);
         await DB.updateObjectData('fields', Fields);
-        await DB.updateObjectData('die', [{}]);
         await DB.update('die', []);
 
 }

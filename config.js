@@ -8,5 +8,6 @@ module.exports={
         '👲':'villager',
         '🔫':'gunner',
     },
-    dayNight: ['Night', 'Day']
+    dayNight: ['Night', 'Day'],
+    timer: 120
 }

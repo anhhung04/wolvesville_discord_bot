@@ -23,8 +23,10 @@ module.exports={
                 let dieIn = await DB.get('die');
                 if(!dieIn[0]===players[i]){
                     dieIn.push(players[i]);
+                    
+                    await DB.update('die', dieIn);
                 }
-
+                
                 if(die.length>=2){
                     collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
                     message.delete();
@@ -41,7 +43,7 @@ module.exports={
 
         callBack['❎']= async (message, react, user, collector)=>{
             collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-            message.delete();
+            return message.delete();
         };
 
         if(die.length>0){

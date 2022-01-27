@@ -6,6 +6,7 @@ module.exports={
     execute: async function(client, msg){
         await DB.updateObjectData('isGameStarted',[{isGameStarted:false}]);
         await DB.updateObjectData('day',[{index:1, dayNight:0}]);
+        await DB.update('die', []);
         const embed = new MessageEmbed();
         embed.setTitle("-------------------------------End------------------------------- ");
         embed.setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);

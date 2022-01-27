@@ -1,5 +1,5 @@
 const DB = require('../features/interactWithDB.js');
-const roles = require('../config.js').roles;
+const {roles, timer} = require('../config.js');
 const dayNight = require('../config.js').dayNight;
 const sendReactCollector = require('../features/sendReactCollector.js');
 
@@ -40,7 +40,7 @@ module.exports={
         switch(dayOrNight){
             case 0: {
                 for(let i=0; i< indexRole.length;i++){
-                    if(roleGame.includes(index[i])){
+                    if(roleGame.includes(indexRole[i])){
                         let message = await msg.channel.send(`${roles[indexRole[i]].toLowerCase()}_turn`);
                         message.delete();
                         break;
@@ -64,25 +64,25 @@ module.exports={
                 }
 
                 for(let i=0; i< die.length;i++){
-                    if(!die[i]===shield){
+                    if(die[i]!==shield){
                         let index = players.indexOf(die[i]);
                         roleGame.splice(index,1);
                         playersID.splice(index, 1);
                         players.splice(index,1);
-                        msg.channel.send(`${die[i]}  was dead`);
+                        sendReactCollector(client, msg.channel, `${die[i]}  was dead`);
                     }
                 }
                 
                 if(numsWolf>= players.length/2){
                     let mess1 = await msg.channel.send('end');
                     mess1.delete();
-
-                    return msg.channel.send('The werewolves win!');
+                    
+                    return sendReactCollector(client, msg.channel, 'The werewolves win!');
                 }else if(numsWolf===0){
                     let mess2 = await msg.channel.send('end');
                     mess2.delete();
-
-                    return msg.channel.send('The villagers win!');
+                    
+                    return sendReactCollector(client, msg.channel, 'The villagers win!');
                 }
 
                 for(let i = 0; i < players.length; i++){
@@ -93,14 +93,20 @@ module.exports={
                     });
                 }
 
+                sendReactCollector(client, msg.channel, `Time to argue!`);
+
                 await DB.update('prRole',roleGame);
                 await DB.updateObjectData('fields', Fields);
                 await DB.update('players', players);
                 await DB.update('playersID', playersID);
+                await DB.update('die', []);
                  
                 setTimeout(()=>{
-                    msg.channel.send('vote_time');
-                },120000);
+                    sendReactCollector(client, msg.channel, `10 seconds left`);
+                    setTimeout(()=>{
+                        msg.channel.send('vote_time');
+                    },10000);
+                },timer*1000-10000);
                 break;
             }
         }

@@ -21,10 +21,9 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
-                console.log(players[i]);
                 killPerson(players[i]);
-
-                msg.channel.send(`${players[i]} was shoot`);
+                
+                sendReactCollector(client, msg.channel, `${players[i]} was shoot`);
 
                 collector.stop('next');
 

@@ -38,13 +38,13 @@ module.exports = async function (client, channel, title, fields, reactContent, u
         collector.on('end',async (collected, reason)=>{
             if(reason!=='messageDelete'){
                 let message = await channel.send(reason);
-                message.delete();
+                return message.delete();
             }
         });
     }catch(err){
         console.log(err);
         let hostChannel = client.channels.cache.get(process.env.HOST_ID);
         let message = await hostChannel.send('Something wrong!');
-        message.delete();
+        return message.delete();
     }
 };
