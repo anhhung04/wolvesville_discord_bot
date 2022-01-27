@@ -46,6 +46,10 @@ module.exports={
 
         let personDie = mode(vote);
 
+        if(personDie==='pass'){
+            return;
+        }
+
         let index = players.indexOf(personDie);
         
         let roleDie = role[index];
