@@ -38,12 +38,18 @@ module.exports={
             return mess.delete();
         };
 
+        sendReactCollector(client, member, `${roles['👀']} turn`);
+
         if(userIds.length===0){
-            return;
+            setTimeout(function(){
+                return;
+            },8000);
+        }else{
+            let member = client.users.cache.get(userIds[0]);
+
+            sendReactCollector(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, reactContent, userIds,callBack, false);
         }
            
-        let member = client.users.cache.get(userIds[0]);
-
-        sendReactCollector(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, reactContent, userIds,callBack, false);
+        
     }
 }

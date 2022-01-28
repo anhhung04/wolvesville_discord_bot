@@ -46,6 +46,8 @@ module.exports={
             return message.delete();
         };
 
+        sendReactCollector(client, member, `${roles['🧙‍♀️']} turn`);
+
         if(die.length>0){
             sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, [{name: '[.1.]', value: die[0], inline: true}], ['👍', '👎'], userIds, {
                 '👍': async (message, react, user, collector)=>{

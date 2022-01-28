@@ -36,6 +36,8 @@ module.exports={
                 userIds.push(playersID[i]);
             }
         }
+
+        sendReactCollector(client, member, `${roles['👀']} turn`);
          
         killPerson(userIds[0]);
 

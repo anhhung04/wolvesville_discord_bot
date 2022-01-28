@@ -23,7 +23,7 @@ module.exports={
         
         if(msg.mentions.users.size < roleGame.length){
             return msg.channel.send('Not enough players!');
-        }else if(msg.mentions.users.size > roleGame.length){
+        }else if(msg.mentions.users.size > roleGame.length||msg.mentions.users.size>13){
             return msg.channel.send('Too much player!');
         }else if(isGameStartedO[0].isGameStarted){
             return msg.channel.send('Please finish the previous game!');

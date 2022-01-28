@@ -29,10 +29,12 @@ module.exports={
             }
         }
 
+        sendReactCollector(client, member, `${roles['🛡️']} turn`);
+
         if(userIds.length===0){
             return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, [msg.author.id],{'🛡️':()=>setTimeout((message, react, user, collector)=>{return message.delete();},3000)}, true);
         }
         
-        await sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, userIds,callBack, false);    
+        return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, userIds,callBack, false);    
     }
 }

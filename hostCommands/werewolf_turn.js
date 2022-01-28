@@ -60,6 +60,8 @@ module.exports={
                 userIds.push(playersID[i]);
             }
         }
+
+        sendReactCollector(client, member, `${roles['🐺']} turn`);
          
         sendReactCollector(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, reactContent, userIds,callBack, false);     
     }
