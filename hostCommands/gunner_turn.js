@@ -25,7 +25,7 @@ module.exports={
                 
                 sendReactCollector(client, msg.channel, `${players[i]} was shot`);
 
-                sendReactCollector(client, msg.channel, `${user.username} was dead`);
+                sendReactCollector(client, msg.channel, `${user.username} died`);
 
                 collector.stop('next');
 
