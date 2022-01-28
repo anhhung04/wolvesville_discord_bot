@@ -20,23 +20,37 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
+                let index = react._emoji.name.slice(0,1)-1;
+                let players = await DB.get('players');
                 let dieIn = await DB.get('die');
-                if(!dieIn[0]===players[i]){
-                    dieIn.push(players[i]);
+                
+
+                if(!players[index]===dieIn[0]){
+                    dieIn.push(players[index]);
                     
                     await DB.update('die', dieIn);
                 }
                 
-                if(die.length>=2){
-                    collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-                    message.delete();
-                }
+                collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
+                return message.delete();
 
             };
 
             if(roleGame[i]==='🧙‍♀️'){
                 userIds.push(playersID[i]);
             }
+        }
+
+        if(userIds.length===0){
+            return sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, fields, reactContent, [{name: '[.1.]', value: 'anonymous', inline: true}], ['👍', '👎'], [msg.author.id], {
+                '👍':  (message, react, user, collector)=>{
+                    collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
+                    return message.delete();
+                },'👎': (message, react, user, collector)=>{
+                    collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
+                    return message.delete();
+                }
+            }, true);
         }
 
         reactContent.push('❎');
@@ -46,10 +60,10 @@ module.exports={
             return message.delete();
         };
 
-        sendReactCollector(client, member, `${roles['🧙‍♀️']} turn`);
+        sendReactCollector(client, msg.channel, `${roles['🧙‍♀️']} turn`);
 
         if(die.length>0){
-            sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, [{name: '[.1.]', value: die[0], inline: true}], ['👍', '👎'], userIds, {
+            sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, [{name: '[.1.]', value: 'anonymous', inline: true}], ['👍', '👎'], userIds, {
                 '👍': async (message, react, user, collector)=>{
                     await DB.update('die',[]);
                     return message.delete();

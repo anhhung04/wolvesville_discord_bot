@@ -31,6 +31,7 @@ module.exports={
         const dayDataArr = await DB.getObjectData('day');
         const dayData = dayDataArr[0];
         var roleGame = await DB.get('prRole');
+        var checkRole = await DB.get('role');
         var day = dayData.index;
         var dayOrNight = dayData.dayNight;
         var indexRole = Object.keys(roles);
@@ -39,8 +40,8 @@ module.exports={
 
         switch(dayOrNight){
             case 0: {
-                for(let i=0; i< indexRole.length;i++){
-                    if(roleGame.includes(indexRole[i])){
+                for(let i=0; i< checkRole.length;i++){
+                    if(checkRole.includes(indexRole[i])){
                         let message = await msg.channel.send(`${roles[indexRole[i]].toLowerCase()}_turn`);
                         message.delete();
                         break;
@@ -70,6 +71,11 @@ module.exports={
                         playersID.splice(index, 1);
                         players.splice(index,1);
                         sendReactCollector(client, msg.channel, `${die[i]}  was dead`);
+
+                        if(die[i] === '🔫') {
+                            let messGun = await msg.channel.send('gunner_turn');
+                            return messGun.delete();
+                        }
                     }
                 }
                 

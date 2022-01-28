@@ -47,6 +47,12 @@ module.exports={
         let personDie = mode(vote);
 
         if(personDie==='pass'){
+            let newIndex = indexDay + dayNightDay;
+            let newDayNight = (dayNightDay+1)%2;
+
+            await DB.updateObjectData('day', [{index: newIndex, dayNight: newDayNight}]);
+            await DB.update('vote', []);
+            
             let mess1 = await msg.channel.send(`next`);
             
             return mess1.delete();
@@ -61,6 +67,26 @@ module.exports={
             return messGun.delete();
         }else{
             killPerson(personDie);
+
+            let roleGame = await DB.get('prRole');
+
+            let numsWolf = 0;
+             
+            for(let i=0; i< roleGame.length;i++){
+                if(roleGame[i]==='🐺') numsWolf++;
+            }
+
+            if(numsWolf>= players.length/2){
+                let mess1 = await msg.channel.send('end');
+                mess1.delete();
+                
+                return sendReactCollector(client, msg.channel, 'The werewolves win!');
+            }else if(numsWolf===0){
+                let mess2 = await msg.channel.send('end');
+                mess2.delete();
+                
+                return sendReactCollector(client, msg.channel, 'The villagers win!');
+            }
         
             sendReactCollector(client, msg.channel, `${personDie} was dead`);
         }

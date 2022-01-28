@@ -16,10 +16,12 @@ module.exports={
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
                 let boxVote1 = await DB.get('vote');
+                    
+                let Fields =  await DB.getObjectData('fields');
 
                 boxVote1.push(Fields[i].value);
 
-                if(boxVote1.length>=playersID.length){
+                if(boxVote1.length>=Fields.length){
                     collector.stop('result');
                     return message.delete();
                 }

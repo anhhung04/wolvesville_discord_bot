@@ -18,7 +18,9 @@ module.exports={
             reactContent.push(emoji);
 
             callBack[emoji.name] =  async (message, react, user, collector)=>{
-                await DB.updateObjectData('shield', [fields[i].value]);
+                let fields = await DB.getObjectData('fields');
+                let index = react._emoji.name.slice(0,1)-1;
+                await DB.update('shield', [fields[index].value]);
                 collector.stop(`next_turn ${roles['🛡️'].toLowerCase()}`);
                 
                 return message.delete();
@@ -29,12 +31,17 @@ module.exports={
             }
         }
 
-        sendReactCollector(client, member, `${roles['🛡️']} turn`);
+        sendReactCollector(client, msg.channel, `${roles['🛡️']} turn`);
 
         if(userIds.length===0){
-            return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, [msg.author.id],{'🛡️':()=>setTimeout((message, react, user, collector)=>{return message.delete();},3000)}, true);
+            return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, [msg.author.id],{ 
+                '1hearts' : (message, react, user, collector) => {
+                collector.stop(`next_turn ${roles['🛡️'].toLowerCase()}`);
+                return message.delete();
+            }
+        }, true);
+        }else{
+            return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, userIds,callBack, false); 
         }
-        
-        return sendReactCollector(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, reactContent, userIds,callBack, false);    
     }
 }

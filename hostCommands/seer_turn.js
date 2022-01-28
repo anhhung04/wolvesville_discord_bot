@@ -38,18 +38,17 @@ module.exports={
             return mess.delete();
         };
 
-        sendReactCollector(client, member, `${roles['👀']} turn`);
+        sendReactCollector(client, msg.channel, `${roles['👀']} turn`);
 
         if(userIds.length===0){
-            setTimeout(function(){
-                return;
+            setTimeout(async function(){
+                let messIn = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+                messIn.delete();
             },8000);
         }else{
             let member = client.users.cache.get(userIds[0]);
 
             sendReactCollector(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, reactContent, userIds,callBack, false);
         }
-           
-        
     }
 }
