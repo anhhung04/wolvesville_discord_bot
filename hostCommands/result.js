@@ -55,14 +55,14 @@ module.exports={
         let index = players.indexOf(personDie);
         
         let roleDie = role[index];
-        
-        killPerson(personDie);
-        
-        sendReactCollector(client, msg.channel, `${personDie} was dead`);
 
         if(roleDie === '🔫') {
             let messGun = await msg.channel.send('gunner_turn');
             return messGun.delete();
+        }else{
+            killPerson(personDie);
+        
+            sendReactCollector(client, msg.channel, `${personDie} was dead`);
         }
         let newIndex = indexDay + dayNightDay;
         let newDayNight = (dayNightDay+1)%2;

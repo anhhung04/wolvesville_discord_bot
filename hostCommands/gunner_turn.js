@@ -23,7 +23,9 @@ module.exports={
             callBack[emoji.name] =  async (message, react, user, collector)=>{
                 killPerson(players[i]);
                 
-                sendReactCollector(client, msg.channel, `${players[i]} was shoot`);
+                sendReactCollector(client, msg.channel, `${players[i]} was shot`);
+
+                sendReactCollector(client, msg.channel, `${user.username} was dead`);
 
                 collector.stop('next');
 
@@ -35,8 +37,10 @@ module.exports={
             }
         }
          
+        killPerson(userIds[0]);
+
         sendReactCollector(client, msg.channel, `Who does ${roles['🔫']} want to shoot?`, fields, reactContent, userIds,callBack, false); 
         
-        killPerson(userIds[0]);
+        
     }
 }
