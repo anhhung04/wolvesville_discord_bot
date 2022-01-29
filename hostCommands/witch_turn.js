@@ -35,13 +35,15 @@ module.exports={
             collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
             return mess.delete();
         };
-        const callBackHeal = async(i) =>{
+        const callBackHeal = async(i, collector, mess) =>{
             if(i.values[0]==='👍'){
                 await DB.update('die', []);
-                await DB.updateObjectData('witchHealPotions', false);
-            }else{
-                return;
+                await DB.updateObjectData('witchHealPotions', false); 
             }
+
+            collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
+                
+            mess.delete();
         };
 
         sendReactCollector(client, msg.channel, `${roles['🧙‍♀️']} turn`);
