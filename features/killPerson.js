@@ -10,8 +10,9 @@ module.exports = async function(username){
         const index = players.indexOf(username);
 
         if(role[index]==='🐺'){
-            let member = client.users.cache.get(playersID[index]);
-            wolfChannel.permissionOverwrites.create(member, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
+            const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);
+            let member = await client.users.cache.get(playersID[index]);
+            wolfChannel.permissionOverwrites.edit(member, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
         }
 
         playersID.splice(index,1);

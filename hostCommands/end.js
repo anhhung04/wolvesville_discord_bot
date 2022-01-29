@@ -4,6 +4,14 @@ const {MessageEmbed} = require('discord.js');
 module.exports={
     name: 'end',
     execute: async function(client, msg){
+        const playersID = await DB.get('playersID');
+        const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);
+        
+        playersID.forEach(id=>{
+            wolfChannel.permissionOverwrites.edit(id, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
+        });
+        
+        
         await DB.updateObjectData('isGameStarted',[{isGameStarted:false}]);
         await DB.updateObjectData('day',[{index:1, dayNight:0}]);
         await DB.update('players',[]);
