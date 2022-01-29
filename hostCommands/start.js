@@ -79,7 +79,7 @@ module.exports={
         
         for(let i=0; i< players.length;i++){
             if(roleGame[i]==='🐺'){
-                let member = await msg.mentions.members.get(playersID[i]);
+                let member = await guild.members.cache.get(playersID[i]);
                 sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
             }
         }

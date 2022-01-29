@@ -1,4 +1,4 @@
-Everyone must join to any voice channel to start game
+Everyone must join in any voice channel to start game
 - start: start game
 
 - ars: add single role

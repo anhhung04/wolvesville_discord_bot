@@ -1,5 +1,6 @@
 const DB = require('../features/interactWithDB.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
+const sendSelectMenu = require('../features/sendSelectMenu.js');
 
 module.exports={
     name: 'vote_time',
@@ -10,7 +11,8 @@ module.exports={
         Fields.push({
             name:'⏭️', 
             value:'skip', 
-            label:'⏭️'
+            label:'⏭️',
+            inline:true
         });
 
         const callBack =  async (i, collector, mess)=>{

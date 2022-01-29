@@ -1,5 +1,5 @@
-const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
+const DB = require('./features/interactWithDB.js');
 
 const client = new Client({
     intents: [

@@ -73,4 +73,4 @@ module.exports={
          
         sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, usersId, callBack, false);     
     }
-}
+};
