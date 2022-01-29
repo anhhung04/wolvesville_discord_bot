@@ -20,10 +20,19 @@ module.exports={
             callBack[emoji.name] =  async (message, react, user, collector)=>{
                 let fields = await DB.getObjectData('fields');
                 let index = react._emoji.name.slice(0,1)-1;
-                await DB.update('shield', [fields[index].value]);
-                collector.stop(`next_turn ${roles['🛡️'].toLowerCase()}`);
-                
-                return message.delete();
+                let shieldArr = await DB.get('shield');
+                if(shieldArr[0]===fields[index].value){
+                    sendReactCollector(client, msg.channel, `${roles['🛡️']} cannot protect someone 2 nights in a row`);
+                     
+                    collector.stop(`next_turn`);
+                    
+                    return message.delete();
+                }else{
+                    await DB.update('shield', [fields[index].value]);
+                    collector.stop(`next_turn ${roles['🛡️'].toLowerCase()}`);
+                    
+                    return message.delete();
+                }
             };
 
             if(roleGame[i]==='🛡️'){

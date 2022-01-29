@@ -13,11 +13,12 @@ function shuffledCards(cards){
 module.exports={
     name: 'start',
     execute: async function(client, msg){
-        const roleGame = await DB.get('role');
+        var roleGame = await DB.get('role');
         var playersID = [];
         var players = [];
         var Fields =[];
         var isGameStartedO = await DB.getObjectData('isGameStarted');
+        let wolfFields = [];
         
         if(roleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
         
@@ -31,7 +32,7 @@ module.exports={
 
         await DB.updateObjectData('isGameStarted',{isGameStarted: true});
 
-        shuffledCards(roleGame);
+        [...roleGame] = shuffledCards(roleGame);
 
         await DB.update('prRole', roleGame);
 
@@ -48,12 +49,24 @@ module.exports={
                 value: member.user.username,
                 inline: true
             });
-            await sendReactCollector(client, member, 'Your role (React 👌 to delete): ', {name: roles[roleGame[i]], value: roleGame[i], inline: true}, ['👌'], playersID[i]);
+            if(roleGame[i]==='🐺'){
+                wolfFields.push({
+                    name: `\[.${i+1}.\]`,
+                    value: players[i],
+                    inline: true
+                });
+            }
+            sendReactCollector(client, member, 'Your role (React 👌 to delete): ', {name: roles[roleGame[i]], value: roleGame[i], inline: true}, ['👌'], playersID[i]);
         }
 
         await DB.update('players', players);
         
         await DB.updateObjectData('fields', Fields);
+        
+        for(let i=0; i< players.length;i++){
+            let member = await msg.mentions.members.get(playersID[i]);
+            sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
+        }
          
         const embed = new MessageEmbed();
         embed.setTitle("Roles: ");

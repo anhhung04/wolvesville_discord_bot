@@ -6,6 +6,10 @@ module.exports={
     name: 'ar',
     execute: async function(client, msg){
         var rolesIns = await DB.get('role');
+        var isGameStartedO = await DB.getObjectData('isGameStarted');
+
+        if(isGameStartedO[0].isGameStarted) return sendReactCollector(client, msg.channel, `Please finish the game!`);
+        
         const embed = new MessageEmbed();
 
         embed.setTitle("Pick roles: ");

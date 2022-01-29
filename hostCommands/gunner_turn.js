@@ -23,12 +23,30 @@ module.exports={
             callBack[emoji.name] =  async (message, react, user, collector)=>{
                 let players = await DB.get('players');
                 let index = react._emoji.name.slice(0,1)-1;
+                let roleGame = await DB.get('prRole');
+                let numsWolf = 0;
                 
                 killPerson(players[index]);
                 
                 sendReactCollector(client, msg.channel, `${players[i]} was shot`);
 
                 sendReactCollector(client, msg.channel, `${user.username} died`);
+                
+                for(let i=0; i< roleGame.length;i++){
+                    if(roleGame[i]==='🐺') numsWolf++;
+                }
+
+                if(numsWolf>= players.length/2){
+                    let mess1 = await msg.channel.send('end');
+                    mess1.delete();
+                    
+                    return sendReactCollector(client, msg.channel, 'The werewolves win!');
+                }else if(numsWolf===0){
+                    let mess2 = await msg.channel.send('end');
+                    mess2.delete();
+                    
+                    return sendReactCollector(client, msg.channel, 'The villagers win!');
+                }
 
                 collector.stop('next');
 

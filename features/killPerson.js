@@ -26,5 +26,6 @@ module.exports = async function(username){
         await DB.update('prRole', role);
         await DB.updateObjectData('fields', Fields);
         await DB.update('die', []);
+        await DB.update('shield', []); 
 
 }

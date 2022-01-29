@@ -6,7 +6,11 @@ module.exports={
     name: 'cr',
     execute: async function(client, msg){
         const roleGame = await DB.get('role');
-        if(roleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
+        var isGameStartedO = await DB.getObjectData('isGameStarted');
+
+        if(isGameStartedO[0].isGameStarted) return sendReactCollector(client, msg.channel, `Please finish the game!`);
+        else if(roleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
+        
         const embed = new MessageEmbed();
         embed.setTitle("Roles: ");
         embed.setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
