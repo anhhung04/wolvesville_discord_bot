@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
+const sendSelectMenu = require('../features/sendSelectMenu.js');
 
 module.exports={
     name:'witch_turn',
@@ -11,6 +12,8 @@ module.exports={
         const playersID = await DB.get('playersID');
         const roleGame = await DB.get('prRole');
         const indexOut =  roleGame.indexOf('🧙‍♀️');
+        const heal = await DB.getObjectData('witchHealPotions');
+        const kill = await DB.getObjectData('witchKillPotions');
 
         fields.push({
             name:'❎',
@@ -20,7 +23,7 @@ module.exports={
         });
         
         const callBack =  async (i, collector, mess)=>{
-            if(i.values[0]==='❎'){
+            if(i.values[0]==='cancel'){
                 collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
                 return mess.delete();
             }
@@ -30,6 +33,7 @@ module.exports={
 
             if(diePer!==dieWolf[0]){
                 await DB.update('mustDie', [diePer]);
+                await DB.updateObjectData('witchKillPotions', false);
             }
             
             collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
@@ -43,28 +47,25 @@ module.exports={
 
             collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
                 
-            mess.delete();
+            return mess.delete();
         };
 
         sendReactCollector(client, msg.channel, `${roles['🧙‍♀️']} turn`);
-
-        const heal = await DB.getObjectData('witchHealPotions');
-        const kill = await DB.getObjectData('witchKillPotions');
         
         if(indexOut!==-1){
             
             if(die[0]!==shield[0]&&heal){
-                sendSelectMenu(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],playersID[indexOut], callBackHeal);
+                sendSelectMenu(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}], playersID[indexOut], callBackHeal);
             }
             if(kill){
-                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields,playersID[indexOut], callBack);
+                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields, playersID[indexOut], callBack);
             }
         }else{
             if(heal){
                 sendSelectMenu(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],playersID[indexOut], callBackHeal, true, 5000, roles['🧙‍♀️']);
             }
             if(kill){
-                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields, playersID, callBackHeal, true, 5000, roles['🧙‍♀️']);
+                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields, playersID, callBack, true, 5000, roles['🧙‍♀️']);
             }
         }
     }

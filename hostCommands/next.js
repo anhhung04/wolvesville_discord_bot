@@ -64,9 +64,12 @@ module.exports={
                     if(roleGame[i]==='🐺') numsWolf++;
                 }
 
-                if(die.length===0){
+                if(die.length===0&&roleGame.includes('🛡️')){
                     sendReactCollector(client, msg.channel, `${shield[0]} was protected by bodyguard last night!`);
-                }else{
+                }else if(die.length===0&&!roleGame.includes('🛡️')){
+                    sendReactCollector(client, msg.channel, `Everybody are safe...`);
+                }
+                else{
                     let index = players.indexOf(die[0]);
                     let roleDie = roleGame[index];
                     
@@ -74,10 +77,10 @@ module.exports={
                         let messGun = await msg.channel.send(`gunner_turn`);
                         return messGun.delete();
                     }
-                    
-                    killPerson(die[0]);
 
-                    sendReactCollector(client, msg.channel, `${shield[0]} was killed by wolves!`);
+                    sendReactCollector(client, msg.channel, `${shield[0]?shield[0]:die[0]} was killed by wolves!`);
+
+                    killPerson(die[0]);
                 }
 
                 if(mustDie.length>0){

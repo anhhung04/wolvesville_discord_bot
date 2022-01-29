@@ -7,9 +7,13 @@ module.exports={
         const playersID = await DB.get('playersID');
         const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);
         
-        playersID.forEach(id=>{
-            wolfChannel.permissionOverwrites.edit(id, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
-        });
+        for(let i=0; i< playersID.length; i++){
+            let member = await client.users.cache.get(playersID[i]);
+            if(!member){
+                continue;
+            }
+            wolfChannel.permissionOverwrites.edit(member, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
+        }
         
         
         await DB.updateObjectData('isGameStarted',[{isGameStarted:false}]);

@@ -9,16 +9,20 @@ module.exports = async function(client, channel,title, fieldsSelect, userIds, ca
 
         const row = new MessageActionRow();
 
-        if(fieldsSelect){
-            if(embed.addFields(fieldsSelect)){
-                embed.addFields(fieldsSelect);
+        var [...fields]=fieldsSelect;
+
+        var addField = fields.every(field => field.name);
+
+        if(fields){
+            if(addField){
+                embed.addFields(fields);
             }
 
             row.addComponents(
 				new MessageSelectMenu()
 					.setPlaceholder('Nothing selected')
                     .setCustomId('select')
-					.addOptions(fieldsSelect)
+					.addOptions(fields)
 			);
         }
 
@@ -35,24 +39,24 @@ module.exports = async function(client, channel,title, fieldsSelect, userIds, ca
 			callBack(i, collector, mess);
 
             if(deleteMessage){
-                return i.message.delete();    
+                return mess.delete();    
             }
 		});
 
 		collector.on('end', async (collected, reason) => {
 			if(reason!=='messageDelete'&&reason!=='time'){
-                let message = await channel.send(reason);
-                return message.delete();
+                let message1 = await channel.send(reason);
+                return message1.delete();
             }else if(reason==='time'){
-                let message = await channel.send(`next_turn ${role}`);
-                return message.delete();
+                let message2 = await channel.send(`next_turn ${role}`);
+                return message2.delete();
             }
 		});
 
     }catch(err){
         console.log(err);
-        let hostChannel = client.channels.cache.get(process.env.HOST_ID);
+        let hostChannel = await client.channels.cache.get(process.env.HOST_ID);
         let message = await hostChannel.send('Something wrong!');
         return message.delete();
     }
-}
+};

@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
+const sendSelectMenu = require('../features/sendSelectMenu.js');
 
 function mode(array)
 {
@@ -39,7 +40,7 @@ module.exports={
         }
         
         
-        const callBack =  async (i, collector, messs)=>{
+        const callBack =  async (i, collector, mess)=>{
             let numsWolf = 0;
             let roleGame = await DB.get('prRole');
             let box = await DB.get('die');
@@ -70,6 +71,6 @@ module.exports={
 
         sendReactCollector(client, msg.channel, `${roles['🐺']} turn`);
          
-        sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, userIds, callBack, false);     
+        sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, usersId, callBack, false);     
     }
 }

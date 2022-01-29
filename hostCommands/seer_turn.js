@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
+const sendSelectMenu = require('../features/sendSelectMenu.js');
 const wait = require('util').promisify(setTimeout);
 
 module.exports={
@@ -12,13 +13,15 @@ module.exports={
         const indexOut = roleGame.indexOf('👀');
 
         
-        const callBack =  async (i)=>{
-            let username = await DB.get('playersID');
+        const callBack =  async (i, collector, mess)=>{
+            let username = await DB.get('players');
             let index = username.indexOf(i.values[0]);
-            let mess = await i.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-           
-            i.channel.send(roleGame[index]);
-            return mess.delete();
+            let roleGameIn = await DB.get('prRole');
+            const hostChannel = await client.channels.cache.get(process.env.HOST_ID);
+            let messHost = await hostChannel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+            
+            mess.channel.send(roleGameIn[index]);
+            return messHost.delete();
         };
 
         sendReactCollector(client, msg.channel, `${roles['👀']} turn`);
@@ -28,8 +31,8 @@ module.exports={
             let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
             return mess.delete();
         }else{
-            let member = client.users.cache.get(playersID[indexOut]);
-
+            let member = await client.users.cache.get(playersID[indexOut]);
+            if(!member) return;
             sendSelectMenu(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, playersID[indexOut], callBack, false);
         }
     }

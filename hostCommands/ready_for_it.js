@@ -26,9 +26,10 @@ module.exports={
             numReady++;
             if (react.count > playersID.length) { 
                 let mess = await msg.channel.send('next');
+                collector.stop();
+                message.delete();
                 return mess.delete();
             }
-            message.delete();
         });
         
     }
