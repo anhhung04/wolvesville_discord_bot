@@ -1,4 +1,5 @@
-- start [@....]: start game
+Everyone must join to any voice channel to start game
+- start: start game
 
 - ars: add single role
 
