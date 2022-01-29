@@ -1,8 +1,12 @@
 - start [@....]: start game
 
-- ar: add role
+- ars: add single role
+
+- arm: add multiple roles
 
 - cr: check roles
+
+- cm: check number of villagers 
 
 - rr: remove role
 

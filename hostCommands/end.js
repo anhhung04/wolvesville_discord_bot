@@ -8,7 +8,8 @@ module.exports={
         const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);
         
         for(let i=0; i< playersID.length; i++){
-            let member = await client.users.cache.get(playersID[i]);
+            let guild = await client.guilds.cache.get(process.env.GUILD_ID);
+            let member = await guild.members.cache.get(playersID[i]);
             if(!member){
                 continue;
             }

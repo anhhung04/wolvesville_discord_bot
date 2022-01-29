@@ -4,9 +4,8 @@ const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 
 module.exports={
-    name: 'ar',
+    name: 'arm',
     execute: async function(client, msg){
-        var rolesIns = await DB.get('role');
         var fields = [];
         var isGameStartedO = await DB.getObjectData('isGameStarted');
 

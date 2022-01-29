@@ -44,6 +44,7 @@ client.on('messageCreate', msg =>{
    
 });
 
+
 client.on('ready', () => {
     console.log(`${client.user.tag} is already`);
 });

@@ -31,7 +31,8 @@ module.exports={
             let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
             return mess.delete();
         }else{
-            let member = await client.users.cache.get(playersID[indexOut]);
+            let guild = await client.guilds.cache.get(process.env.GUILD_ID);
+            let member = await guild.members.cache.get(playersID[indexOut]);
             if(!member) return;
             sendSelectMenu(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, playersID[indexOut], callBack, false);
         }
