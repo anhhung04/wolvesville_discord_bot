@@ -2,6 +2,7 @@ const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const {MessageEmbed} = require('discord.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
+const addWereWolvesToChatChannel = require('../features/addWereWolvesToChatChannel.js');
 
 function shuffledCards(array) {
     let [...result] = array;
@@ -82,6 +83,8 @@ module.exports={
             embed.addField(roles[key], key, inline = true);
         });
         
+        addWereWolvesToChatChannel(client, msg);
+
         await msg.channel.send({embeds:[embed], content: 'ready_for_it'});
 
     }

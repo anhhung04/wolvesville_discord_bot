@@ -41,8 +41,8 @@ client.on('messageCreate', msg =>{
         hostCommands.get(command).execute(client, msg);
     }
     return;
+   
 });
-
 
 client.on('ready', () => {
     console.log(`${client.user.tag} is already`);
