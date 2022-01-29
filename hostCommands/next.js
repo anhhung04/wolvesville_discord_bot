@@ -2,6 +2,7 @@ const DB = require('../features/interactWithDB.js');
 const {roles, timer} = require('../config.js');
 const dayNight = require('../config.js').dayNight;
 const sendReactCollector = require('../features/sendReactCollector.js');
+const killPerson = require('../features/killPerson.js');
 
 function mode(array)
 {
@@ -50,33 +51,39 @@ module.exports={
                 break;
             }case 1:{
                 let players = await DB.get('players');
-                let playersID = await DB.get('playersID');
-                
-                let die = await DB.get('die');
-                
-                let shieldArr = await DB.get('shield');
-                let shield = shieldArr[0];
 
-                let Fields = [];
+                const mustDie = await DB.get('mustDie');
+                
+                const die = await DB.get('die');
+                
+                let shield = await DB.get('shield');
+                
                 let numsWolf = 0;
     
                 for(let i=0; i< roleGame.length;i++){
                     if(roleGame[i]==='🐺') numsWolf++;
                 }
 
-                for(let i=0; i< die.length;i++){
-                    if(die[i]!==shield){
-                        let index = players.indexOf(die[i]);
-                        roleGame.splice(index,1);
-                        playersID.splice(index, 1);
-                        players.splice(index,1);
-                        sendReactCollector(client, msg.channel, `${die[i]}  was dead`);
-
-                        if(die[i] === '🔫') {
-                            let messGun = await msg.channel.send('gunner_turn');
-                            return messGun.delete();
-                        }
+                if(die.length===0){
+                    sendReactCollector(client, msg.channel, `${shield[0]} was protected by bodyguard last night!`);
+                }else{
+                    let index = players.indexOf(die[0]);
+                    let roleDie = roleGame[index];
+                    
+                    if(roleDie==='🔫'){
+                        let messGun = await msg.channel.send(`gunner_turn`);
+                        return messGun.delete();
                     }
+                    
+                    killPerson(die[0]);
+
+                    sendReactCollector(client, msg.channel, `${shield[0]} was killed by wolves!`);
+                }
+
+                if(mustDie.length>0){
+                    killPerson(mustDie[0]);
+
+                    sendReactCollector(client, msg.channel, `${mustDie[0]} was killed by witch!`);
                 }
                 
                 if(numsWolf>= players.length/2){
@@ -91,21 +98,15 @@ module.exports={
                     return sendReactCollector(client, msg.channel, 'The villagers win!');
                 }
 
-                for(let i = 0; i < players.length; i++){
-                    Fields.push({
-                        name: `\[.${i+1}.\]`,
-                        value: players[i],
-                        inline: true
-                    });
-                }
-
                 sendReactCollector(client, msg.channel, `Time to argue!`);
 
-                await DB.update('prRole',roleGame);
-                await DB.updateObjectData('fields', Fields);
-                await DB.update('players', players);
-                await DB.update('playersID', playersID);
+                const fields = await DB.getObjectData('fields');
+
+                sendReactCollector(client, msg.channel, 'Villagers', fields);
+
+                await DB.update('mustDie',[]);
                 await DB.update('die', []);
+                await DB.update('shield', []); 
                  
                 setTimeout(()=>{
                     sendReactCollector(client, msg.channel, `10 seconds left`);

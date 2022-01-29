@@ -28,6 +28,7 @@ module.exports={
                 let mess = await msg.channel.send('next');
                 return mess.delete();
             }
+            message.delete();
         });
         
     }

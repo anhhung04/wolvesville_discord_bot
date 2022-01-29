@@ -17,7 +17,8 @@ module.exports = async function(username){
             Fields.push({
                 name: `\[.${i+1}.\]`,
                 value: players[i],
-                inline: true
+                inline: true,
+                label: players[i]
             });
         }
         
@@ -25,7 +26,5 @@ module.exports = async function(username){
         await DB.update('players', players);
         await DB.update('prRole', role);
         await DB.updateObjectData('fields', Fields);
-        await DB.update('die', []);
-        await DB.update('shield', []); 
 
 }

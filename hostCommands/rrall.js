@@ -1,4 +1,5 @@
 const DB = require('../features/interactWithDB.js');
+const sendReactCollector = require('../features/sendReactCollector.js');
 
 module.exports={
     name:'rrall',
@@ -8,6 +9,7 @@ module.exports={
         if(isGameStartedO[0].isGameStarted) return sendReactCollector(client, msg.channel, `Please finish the game!`);
         
         await DB.update('role', []);
-        return msg.channel.send('Roles have been reset!');
+        return sendReactCollector(client, msg.channel, 'Roles have been reset!');
+        
     }
 }

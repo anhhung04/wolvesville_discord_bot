@@ -1,54 +1,36 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
+const wait = require('util').promisify(setTimeout);
 
 module.exports={
     name:'seer_turn',
     execute: async function(client, msg){
-        let reactContent =[];
-        let userIds = [];
-        let callBack = {};
-        let playersID = await DB.get('playersID');
-        let roleGame = await DB.get('prRole');
-        let fields = await DB.getObjectData('fields');
+        const playersID = await DB.get('playersID');
+        const roleGame = await DB.get('prRole');
+        const fields = await DB.getObjectData('fields');
+        const indexOut = roleGame.indexOf('👀');
+
         
-        for(let i=0; i< playersID.length;i++){
-            let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
-
-            reactContent.push(emoji);
-
-            callBack[emoji.name] =  async (message, react, user, collector)=>{
-                prMess = await message.channel.send(roleGame[i]);
-                mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-                
-                return mess.delete();
-            };
-
-            if(roleGame[i]==='👀'){
-                userIds.push(playersID[i]);
-            }
-        }
-
-        reactContent.push('❎');
-
-        callBack['❎']= async (message, react, user, collector)=>{
-            let channel = await client.channels.cache.get(process.env.HOST_ID);
-            let mess = await channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-            message.delete();
+        const callBack =  async (i)=>{
+            let username = await DB.get('playersID');
+            let index = username.indexOf(i.values[0]);
+            let mess = await i.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+           
+            i.channel.send(roleGame[index]);
             return mess.delete();
         };
 
         sendReactCollector(client, msg.channel, `${roles['👀']} turn`);
 
-        if(userIds.length===0){
-            setTimeout(async function(){
-                let messIn = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-                messIn.delete();
-            },8000);
+        if(indexOut===-1){
+            await wait(5000);
+            let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+            return mess.delete();
         }else{
-            let member = client.users.cache.get(userIds[0]);
+            let member = client.users.cache.get(playersID[indexOut]);
 
-            sendReactCollector(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, reactContent, userIds,callBack, false);
+            sendSelectMenu(client, member, `Who does ${roles['👀']} want to reveal tonight?`, fields, playersID[indexOut], callBack, false);
         }
     }
 }

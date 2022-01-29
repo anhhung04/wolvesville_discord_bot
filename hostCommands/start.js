@@ -3,28 +3,35 @@ const roles = require('../config.js').roles;
 const {MessageEmbed} = require('discord.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
 
-function shuffledCards(cards){
-    for(let i=0; i< Math.floor(Math.random()*50);i++){
-        cards.sort((a,b)=> 0.5- Math.random());
-    }  
-    return cards;
-};
+function shuffledCards(array) {
+    let [...result] = array;
+
+    for (let i = result.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = result[i];
+        result[i] = result[j];
+        result[j] = temp;
+    }
+  
+    return result;
+}
 
 module.exports={
     name: 'start',
     execute: async function(client, msg){
-        var roleGame = await DB.get('role');
-        var playersID = [];
+        var oldRoleGame = await DB.get('role');
         var players = [];
         var Fields =[];
         var isGameStartedO = await DB.getObjectData('isGameStarted');
         let wolfFields = [];
+        const roleGame = shuffledCards(oldRoleGame);
+        const [...playersID] = shuffledCards(msg.mentions.users.keys());
         
-        if(roleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
+        if(oldRoleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
         
-        if(msg.mentions.users.size < roleGame.length){
+        if(msg.mentions.users.size < oldRoleGame.length){
             return msg.channel.send('Not enough players!');
-        }else if(msg.mentions.users.size > roleGame.length||msg.mentions.users.size>13){
+        }else if(msg.mentions.users.size > oldRoleGame.length){
             return msg.channel.send('Too much player!');
         }else if(isGameStartedO[0].isGameStarted){
             return msg.channel.send('Please finish the previous game!');
@@ -32,14 +39,9 @@ module.exports={
 
         await DB.updateObjectData('isGameStarted',{isGameStarted: true});
 
-        [...roleGame] = shuffledCards(roleGame);
-
         await DB.update('prRole', roleGame);
 
-        [...playersID] = msg.mentions.users.keys();
-            
         await DB.update('playersID', playersID);
-        
 
         for(let i =0; i< playersID.length;i++){
             let member = await msg.mentions.members.get(playersID[i]);
@@ -47,13 +49,15 @@ module.exports={
             Fields.push({
                 name: `\[.${i+1}.\]`,
                 value: member.user.username,
-                inline: true
+                inline: true,
+                label: member.user.username
             });
             if(roleGame[i]==='🐺'){
                 wolfFields.push({
                     name: `\[.${i+1}.\]`,
                     value: players[i],
-                    inline: true
+                    inline: true,
+                    label: member.user.username
                 });
             }
             sendReactCollector(client, member, 'Your role (React 👌 to delete): ', {name: roles[roleGame[i]], value: roleGame[i], inline: true}, ['👌'], playersID[i]);
@@ -64,15 +68,17 @@ module.exports={
         await DB.updateObjectData('fields', Fields);
         
         for(let i=0; i< players.length;i++){
-            let member = await msg.mentions.members.get(playersID[i]);
-            sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
+            if(roleGame[i]==='🐺'){
+                let member = await msg.mentions.members.get(playersID[i]);
+                sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
+            }
         }
          
         const embed = new MessageEmbed();
         embed.setTitle("Roles: ");
         embed.setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
         embed.setTimestamp(); 
-        roleGame.forEach((key) => {
+        oldRoleGame.forEach((key) => {
             embed.addField(roles[key], key, inline = true);
         });
         

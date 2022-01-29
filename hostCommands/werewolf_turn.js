@@ -27,52 +27,49 @@ function mode(array)
 module.exports={
     name:'werewolf_turn',
     execute: async function(client, msg){
-        let reactContent =[];
-        let userIds = [];
-        let callBack = {};
-        let fields = await DB.getObjectData('fields');
-        let playersID = await DB.get('playersID');
-        let roleGameOut = await DB.get('prRole');
-        
-        
-        for(let i=0; i< playersID.length;i++){
-            let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
+        const fields = await DB.getObjectData('fields');
+        const playersID = await DB.get('playersID');
+        const roleGameOut = await DB.get('prRole');
+        var usersId = [];
 
-            reactContent.push(emoji);
-
-            callBack[emoji.name] =  async (message, react, user, collector)=>{
-                let numsWolf = 0;
-                let roleGame = await DB.get('prRole');
-                let box = await DB.get('die');
-                let index = react._emoji.name.slice(0,1)-1;
-                let fields = await DB.getObjectData('fields');
-
-                for(let i=0; i< roleGame.length;i++){
-                    if(roleGame[i]==='🐺') numsWolf++;
-                }
-
-                if(numsWolf===0){
-                    collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
-                    return message.delete();
-                }
-               
-                box.push(fields[index].value);
-                if(box.length >= numsWolf){
-                    await DB.update('die', [mode(box)]);
-                    collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
-                    return message.delete();
-                }else{
-                    await DB.update('die', box);
-                }
-            };
-
+        for(let i = 0; i < playersID.length; i++){
             if(roleGameOut[i]==='🐺'){
-                userIds.push(playersID[i]);
+                usersId.push(playersID[i]);
             }
         }
+        
+        
+        const callBack =  async (i, collector, messs)=>{
+            let numsWolf = 0;
+            let roleGame = await DB.get('prRole');
+            let box = await DB.get('die');
+            let shield = await DB.get('shield');
+            let diePerson = i.values[0];
+
+            for(let i=0; i< roleGame.length;i++){
+                if(roleGame[i]==='🐺') numsWolf++;
+            }
+            
+           
+            box.push(diePerson);
+            if(box.length >= numsWolf){
+                let diePer = mode(box);
+                
+                if(diePer===shield[0]){
+                    await DB.update('die',[]);
+                }else{
+                    await DB.update('die', diePer);
+                }
+                
+                collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
+                return mess.delete();
+            }else{
+                await DB.update('die', box);
+            }
+        };
 
         sendReactCollector(client, msg.channel, `${roles['🐺']} turn`);
          
-        sendReactCollector(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, reactContent, userIds,callBack, false);     
+        sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, userIds, callBack, false);     
     }
 }

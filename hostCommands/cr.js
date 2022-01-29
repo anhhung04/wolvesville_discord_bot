@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const {MessageEmbed} = require('discord.js');
+const sendReactCollector = require('../features/sendReactCollector.js');
 
 module.exports={
     name: 'cr',
@@ -9,7 +10,7 @@ module.exports={
         var isGameStartedO = await DB.getObjectData('isGameStarted');
 
         if(isGameStartedO[0].isGameStarted) return sendReactCollector(client, msg.channel, `Please finish the game!`);
-        else if(roleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
+        else if(roleGame.length===0) return sendReactCollector(client, msg.channel, 'Roles haven\'t been set!');
         
         const embed = new MessageEmbed();
         embed.setTitle("Roles: ");

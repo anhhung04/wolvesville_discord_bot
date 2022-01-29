@@ -5,74 +5,65 @@ const sendReactCollector = require('../features/sendReactCollector.js');
 module.exports={
     name:'witch_turn',
     execute: async function(client, msg){
-        let die = await DB.get('die');
-        let fields = await DB.getObjectData('fields');
-        let reactContent =[];
-        let userIds = [];
-        let callBack = {};
-        let playersID = await DB.get('playersID');
-        let players = await DB.get('players');
-        let roleGame = await DB.get('prRole');
+        const die = await DB.get('die');
+        const shield = await DB.get('shield');
+        var fields = await DB.getObjectData('fields');
+        const playersID = await DB.get('playersID');
+        const roleGame = await DB.get('prRole');
+        const indexOut =  roleGame.indexOf('🧙‍♀️');
 
-        for(let i=0; i< playersID.length;i++){
-            let emoji = client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
-
-            reactContent.push(emoji);
-
-            callBack[emoji.name] =  async (message, react, user, collector)=>{
-                let index = react._emoji.name.slice(0,1)-1;
-                let players = await DB.get('players');
-                let dieIn = await DB.get('die');
-                
-
-                if(!players[index]===dieIn[0]){
-                    dieIn.push(players[index]);
-                    
-                    await DB.update('die', dieIn);
-                }
-                
+        fields.push({
+            name:'❎',
+            value: 'cancel',
+            label: '❎',
+            inline: true
+        });
+        
+        const callBack =  async (i, collector, mess)=>{
+            if(i.values[0]==='❎'){
                 collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-                return message.delete();
-
-            };
-
-            if(roleGame[i]==='🧙‍♀️'){
-                userIds.push(playersID[i]);
+                return mess.delete();
             }
-        }
 
-        if(userIds.length===0){
-            return sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, fields, reactContent, [{name: '[.1.]', value: 'anonymous', inline: true}], ['👍', '👎'], [msg.author.id], {
-                '👍':  (message, react, user, collector)=>{
-                    collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-                    return message.delete();
-                },'👎': (message, react, user, collector)=>{
-                    collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-                    return message.delete();
-                }
-            }, true);
-        }
+            let diePer = i.values[0];
+            let dieWolf = await DB.get('die');
 
-        reactContent.push('❎');
-
-        callBack['❎']= async (message, react, user, collector)=>{
+            if(diePer!==dieWolf[0]){
+                await DB.update('mustDie', [diePer]);
+            }
+            
             collector.stop(`next_turn ${roles['🧙‍♀️'].toLowerCase()}`);
-            return message.delete();
+            return mess.delete();
+        };
+        const callBackHeal = async(i) =>{
+            if(i.values[0]==='👍'){
+                await DB.update('die', []);
+                await DB.updateObjectData('witchHealPotions', false);
+            }else{
+                return;
+            }
         };
 
         sendReactCollector(client, msg.channel, `${roles['🧙‍♀️']} turn`);
 
-        if(die.length>0){
-            sendReactCollector(client, msg.channel, `A person died! Would ${roles['🧙‍♀️']} like to heal?`, [{name: '[.1.]', value: 'anonymous', inline: true}], ['👍', '👎'], userIds, {
-                '👍': async (message, react, user, collector)=>{
-                    await DB.update('die',[]);
-                    return message.delete();
-                },'👎':async (message, react, user, collector)=>{
-                    return message.delete();
-                }
-            }, false);
+        const heal = await DB.getObjectData('witchHealPotions');
+        const kill = await DB.getObjectData('witchKillPotions');
+        
+        if(indexOut!==-1){
+            
+            if(die[0]!==shield[0]&&heal){
+                sendSelectMenu(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],playersID[indexOut], callBackHeal);
+            }
+            if(kill){
+                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields,playersID[indexOut], callBack);
+            }
+        }else{
+            if(heal){
+                sendSelectMenu(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],playersID[indexOut], callBackHeal, true, 5000, roles['🧙‍♀️']);
+            }
+            if(kill){
+                sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields, playersID, callBackHeal, true, 5000, roles['🧙‍♀️']);
+            }
         }
-
-        sendReactCollector(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill tonight?`,fields, reactContent, userIds, callBack, false);
     }
-}
+};

@@ -24,17 +24,23 @@ function mode(array)
     return maxEl;
 }
 
-function shuffledCards(cards){
-    for(let i=0; i< Math.floor(Math.random()*50);i++){
-        cards.sort((a,b)=> 0.5- Math.random());
-    }  
-    return cards;
-};
+function shuffledCards(array) {
+    let [...result] = array;
+
+    for (let i = result.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = result[i];
+        result[i] = result[j];
+        result[j] = temp;
+    }
+  
+    return result;
+}
 
 module.exports={
     name: 'result',
     execute: async function(client, msg){
-        var vote = await DB.get('vote');
+        const oldVote = await DB.get('vote');
         var players = await DB.get('players');
         var role = await DB.get('prRole');
         var dayO = await DB.getObjectData('day');
@@ -42,11 +48,11 @@ module.exports={
         var indexDay = day.index;
         var dayNightDay = day.dayNight;
         
-        shuffledCards(vote);
+        [...vote] = shuffledCards(oldVote);
 
         let personDie = mode(vote);
 
-        if(personDie==='pass'){
+        if(personDie==='skip'){
             let newIndex = indexDay + dayNightDay;
             let newDayNight = (dayNightDay+1)%2;
 

@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const {MessageEmbed} = require('discord.js');
 const roles = require('../config.js').roles;
+const sendReactCollector = require('../features/sendReactCollector.js');
 
 module.exports={
     name: 'ar',

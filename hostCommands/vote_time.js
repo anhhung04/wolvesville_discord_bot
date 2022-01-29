@@ -6,45 +6,28 @@ module.exports={
     execute: async function(client, msg){
         var playersID = await DB.get('playersID');
         var Fields =  await DB.getObjectData('fields');
-        var reactContent = [];
-        var callBack={};
 
-        for(let i=0; i< playersID.length;i++){
-            let emoji = await client.emojis.cache.find(emoji => emoji.name === `${i+1}hearts`);
+        Fields.push({
+            name:'⏭️', 
+            value:'skip', 
+            label:'⏭️'
+        });
 
-            reactContent.push(emoji);
+        const callBack =  async (i, collector, mess)=>{
+            let vote = await DB.get('vote');
+            let playersID = await DB.get('playersID');
+            
+            vote.push(i.values[0]);
 
-            callBack[emoji.name] =  async (message, react, user, collector)=>{
-                let boxVote1 = await DB.get('vote');
-                    
-                let Fields =  await DB.getObjectData('fields');
-
-                boxVote1.push(Fields[i].value);
-
-                if(boxVote1.length>=Fields.length){
-                    collector.stop('result');
-                    return message.delete();
-                }
-
-                await DB.update('vote', boxVote1);
-            };
-        }
-
-        reactContent.push('⏭️');
-
-        callBack['⏭️'] =  async (message, react, user, collector)=>{
-            let boxVote2 = await DB.get('vote');
-            boxVote2.push('pass');
-
-            if(boxVote2.length===playersID.length){
+            if(vote.length===playersID.length){
                 collector.stop('result');
                 return message.delete();
             }
             
-            await DB.update('vote', boxVote2);
+            await DB.update('vote', vote);
         };
          
-        sendReactCollector(client, msg.channel, `Vote:`, Fields, reactContent, playersID,callBack, false);
+        sendSelectMenu(client, msg.channel, `Vote:`, Fields, playersID, callBack, false);
 
     }
 }
