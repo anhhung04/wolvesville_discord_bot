@@ -26,13 +26,22 @@ module.exports={
         var isGameStartedO = await DB.getObjectData('isGameStarted');
         let wolfFields = [];
         const roleGame = shuffledCards(oldRoleGame);
-        const [...playersID] = shuffledCards(msg.mentions.users.keys());
-        
+        const guild = await client.guilds.cache.get(msg.guildId);
+        const hostMember = await guild.members.cache.get(msg.author.id);
+
+        if(!hostMember.voice.channel) return msg.channel.send('Please connect to a voice channel');
+
+        hostMember.voice.channel.setName('MA SÓI');
+
         if(oldRoleGame.length===0) return msg.channel.send('Roles haven\'t been set!');
+
+        var [...memberKeys] = hostMember.voice.channel.members.keys();
+
+        const [...playersID] = shuffledCards(memberKeys);
         
-        if(msg.mentions.users.size < oldRoleGame.length){
+        if(memberKeys.length < oldRoleGame.length){
             return msg.channel.send('Not enough players!');
-        }else if(msg.mentions.users.size > oldRoleGame.length){
+        }else if(memberKeys.length > oldRoleGame.length){
             return msg.channel.send('Too much player!');
         }else if(isGameStartedO[0].isGameStarted){
             return msg.channel.send('Please finish the previous game!');
@@ -45,7 +54,7 @@ module.exports={
         await DB.update('playersID', playersID);
 
         for(let i =0; i< playersID.length;i++){
-            let member = await msg.mentions.members.get(playersID[i]);
+            let member = await guild.members.cache.get(playersID[i]);
             players.push(member.user.username);
             Fields.push({
                 name: `\[.${i+1}.\]`,

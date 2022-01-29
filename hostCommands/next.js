@@ -36,11 +36,18 @@ module.exports={
         var day = dayData.index;
         var dayOrNight = dayData.dayNight;
         var indexRole = Object.keys(roles);
+        const playersID = await DB.get('playersID');
+        const guild = await client.guilds.cache.get(msg.guildId);
 
         sendReactCollector(client, msg.channel, `${dayNight[dayOrNight]} ${day}`);
 
         switch(dayOrNight){
             case 0: {
+                playersID.forEach(async function(id){
+                    let member = await guild.members.cache.get(id);
+                    member.voice.setDeaf(true);
+                });
+                
                 for(let i=0; i< checkRole.length;i++){
                     if(checkRole.includes(indexRole[i])){
                         let message = await msg.channel.send(`${roles[indexRole[i]].toLowerCase()}_turn`);
@@ -48,8 +55,16 @@ module.exports={
                         break;
                     }
                 }
+                let messageNext = await msg.channel.send(`next_turn`);
+                messageNext.delete();
+                
                 break;
             }case 1:{
+                playersID.forEach(async function(id){
+                    let member = await guild.members.cache.get(id);
+                    member.voice.setDeaf(false);
+                });
+
                 let players = await DB.get('players');
 
                 const mustDie = await DB.get('mustDie');

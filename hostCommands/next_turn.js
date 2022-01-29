@@ -11,14 +11,14 @@ module.exports={
         var day = dayO[0];
 
         var preIndex = indexV.indexOf(msg.content.split(/ +/)[1]);
-        var nextIndex = (preIndex+1)%indexV.length;
+        var nextIndex = (preIndex+1);
         
         for(let i=0; i<indexK.length; i++){
-            if(role.includes(indexK[nextIndex])||nextIndex === indexV.indexOf('villager')) break;
+            if(role.includes(indexK[nextIndex])||nextIndex >= indexV.indexOf('villager')) break;
             nextIndex++;
         }
         
-        if(nextIndex === indexV.indexOf('villager')){
+        if(nextIndex >= indexV.indexOf('villager')||nextIndex===0){
 
             await DB.updateObjectData('day', [{index: day.index+=day.dayNight, dayNight: (day.dayNight+1)%2}]);
             
