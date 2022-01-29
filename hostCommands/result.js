@@ -71,7 +71,13 @@ module.exports={
         if(roleDie === '🔫') {
             let messGun = await msg.channel.send('gunner_turn');
             return messGun.delete();
-        }else{
+        }else if(roleDie==='🤡'){
+            sendReactCollector(client, msg.channel, `${personDie} is fool! He wins!`);
+
+            let messFool = await msg.channel.send('end');
+            return messFool.delete();
+        }
+        else{
             killPerson(personDie);
 
             let roleGame = await DB.get('prRole');

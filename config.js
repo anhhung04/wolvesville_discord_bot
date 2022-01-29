@@ -7,6 +7,7 @@ module.exports={
         '👀':'seer',
         '👲':'villager',
         '🔫':'gunner',
+        '🤡': 'fool'
     },
     dayNight: ['Night', 'Day'],
     timer: 120
