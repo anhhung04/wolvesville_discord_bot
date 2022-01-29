@@ -1,4 +1,3 @@
-const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const DB = require('../features/interactWithDB.js');
 
