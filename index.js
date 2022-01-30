@@ -10,7 +10,10 @@ const client = new Client({
         Intents.FLAGS.DIRECT_MESSAGES,
         Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
         Intents.FLAGS.GUILD_VOICE_STATES,
-        Intents.FLAGS.GUILD_BANS
+        Intents.FLAGS.GUILD_BANS,
+        Intents.FLAGS.GUILD_INTEGRATIONS,
+        Intents.FLAGS.GUILD_INVITES,
+        Intents.FLAGS.GUILD_SCHEDULED_EVENTS
     ],
     partials: [
     "CHANNEL"
@@ -30,6 +33,7 @@ for(let file of files1){
     let command = require(`./hostCommands/${file}`);
     hostCommands.set(command.name, command);
 }
+
 
 client.on('messageCreate', msg =>{
     let command = msg.content.trim().toLowerCase().split(/ +/).shift();

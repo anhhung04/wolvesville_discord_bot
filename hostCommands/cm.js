@@ -1,5 +1,6 @@
 const sendReactCollector = require('../features/sendReactCollector.js');
 const DB = require('../features/interactWithDB.js');
+require('dotenv').config();
 
 module.exports ={
     name:'cm',

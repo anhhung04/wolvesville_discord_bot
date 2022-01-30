@@ -3,6 +3,7 @@ const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const sendSelectMenu = require('../features/sendSelectMenu.js');
 const sendSelectMenuDie = require('../features/sendSelectMenuDie.js');
+require('dotenv').config();
 
 module.exports={
     name:'bodyguard_turn',

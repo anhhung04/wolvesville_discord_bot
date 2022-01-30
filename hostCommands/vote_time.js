@@ -1,6 +1,6 @@
 const DB = require('../features/interactWithDB.js');
-const sendReactCollector = require('../features/sendReactCollector.js');
 const sendSelectMenu = require('../features/sendSelectMenu.js');
+require('dotenv').config();
 
 module.exports={
     name: 'vote_time',

@@ -2,6 +2,7 @@ const DB = require('../features/interactWithDB.js');
 const {MessageEmbed, MessageActionRow, MessageSelectMenu} = require('discord.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
+require('dotenv').config();
 
 module.exports={
     name: 'arm',

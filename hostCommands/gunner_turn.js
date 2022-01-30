@@ -3,6 +3,7 @@ const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const killPerson = require('../features/killPerson.js');
 const sendSelectMenu = require('../features/sendSelectMenu.js');
+require('dotenv').config();
 
 
 module.exports={

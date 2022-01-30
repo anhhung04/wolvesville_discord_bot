@@ -3,6 +3,7 @@ const {roles, timer} = require('../config.js');
 const dayNight = require('../config.js').dayNight;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const killPerson = require('../features/killPerson.js');
+require('dotenv').config();
 
 function mode(array)
 {

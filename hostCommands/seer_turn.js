@@ -3,6 +3,7 @@ const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const sendSelectMenu = require('../features/sendSelectMenu.js');
 const wait = require('util').promisify(setTimeout);
+require('dotenv').config();
 
 module.exports={
     name:'seer_turn',

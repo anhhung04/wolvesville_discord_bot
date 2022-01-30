@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const {MessageEmbed} = require('discord.js');
 const roles = require('../config.js').roles;
+require('dotenv').config();
 
 module.exports={
     name: 'ars',

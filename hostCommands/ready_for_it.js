@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js');
 const DB = require('../features/interactWithDB.js');
+require('dotenv').config();
 
 module.exports={
     name: 'ready_for_it',

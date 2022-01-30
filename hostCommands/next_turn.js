@@ -1,5 +1,6 @@
 const { roles } = require('../config.js');
 const DB = require('../features/interactWithDB.js');
+require('dotenv').config();
 
 module.exports={
     name: 'next_turn',

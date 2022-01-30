@@ -1,4 +1,5 @@
 const { MessageActionRow, MessageEmbed, MessageSelectMenu } = require('discord.js');
+require('dotenv').config();
 
 module.exports = async function(client, channel,title, fieldsSelect, userIds, callBack,deleteMessage = true, addField=true, addOption=true){
     try{

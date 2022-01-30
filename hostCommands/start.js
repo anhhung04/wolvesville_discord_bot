@@ -3,6 +3,7 @@ const roles = require('../config.js').roles;
 const {MessageEmbed} = require('discord.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
 const addWereWolvesToChatChannel = require('../features/addWereWolvesToChatChannel.js');
+require('dotenv').config();
 
 function shuffledCards(array) {
     let [...result] = array;

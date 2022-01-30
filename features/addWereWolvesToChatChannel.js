@@ -1,4 +1,5 @@
 const DB = require('../features/interactWithDB.js');
+require('dotenv').config();
 
 module.exports = async function(client, msg){
     const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);

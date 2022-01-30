@@ -1,6 +1,7 @@
 const DB = require('../features/interactWithDB.js');
 const sendReactCollector = require('../features/sendReactCollector.js');
 const killPerson = require('../features/killPerson.js');
+require('dotenv').config();
 
 function mode(array)
 {

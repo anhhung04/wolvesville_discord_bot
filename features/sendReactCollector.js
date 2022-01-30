@@ -1,5 +1,6 @@
 const console = require('console');
 const {MessageEmbed} = require('discord.js');
+require('dotenv').config();
 
 module.exports = async function (client, channel, title, fields, reactContent, userIds, callBack,deleteMessage = true){
     try{

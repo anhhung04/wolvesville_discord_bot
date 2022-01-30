@@ -2,6 +2,7 @@ const DB = require('../features/interactWithDB.js');
 const roles = require('../config.js').roles;
 const sendReactCollector = require('../features/sendReactCollector.js');
 const sendSelectMenu = require('../features/sendSelectMenu.js');
+require('dotenv').config();
 
 function mode(array)
 {

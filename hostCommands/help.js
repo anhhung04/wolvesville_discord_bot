@@ -1,4 +1,5 @@
 const fsPromises = require('fs').promises;
+require('dotenv').config();
 
 module.exports={
     name : 'help',
