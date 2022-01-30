@@ -24,12 +24,12 @@ module.exports={
             return messHost.delete();
         };
 
-        sendReactCollector(client, msg.channel, `${roles['👀']} turn`);
+        await sendReactCollector(client, msg.channel, `${roles['👀']} turn`);
 
         if(indexOut===-1){
             await wait(5000);
-            let mess = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
-            return mess.delete();
+            let mess2 = await msg.channel.send(`next_turn ${roles['👀'].toLowerCase()}`);
+            return mess2.delete();
         }else{
             let guild = await client.guilds.cache.get(process.env.GUILD_ID);
             let member = await guild.members.cache.get(playersID[indexOut]);

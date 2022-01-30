@@ -23,11 +23,11 @@ module.exports = async function(username){
         var players = await DB.get('players');
         var Fields =  [];
         var role = await DB.get('prRole');
-        const guild = await client.guilds.cache.get(process.env.GUILD_ID);
 
         const index = players.indexOf(username);
 
         if(role[index]==='🐺'){
+            let guild = await client.guilds.cache.get(process.env.GUILD_ID);
             const wolfChannel = await client.channels.cache.get(process.env.Wolves_ID);
             let member = await guild.members.cache.get(playersID[index]);
             wolfChannel.permissionOverwrites.edit(member, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
@@ -49,6 +49,6 @@ module.exports = async function(username){
         await DB.update('playersID', playersID);
         await DB.update('players', players);
         await DB.update('prRole', role);
-        await DB.updateObjectData('fields', Fields);
+        return DB.updateObjectData('fields', Fields);
 
 }

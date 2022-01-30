@@ -9,8 +9,7 @@ module.exports={
         const roleGame = await DB.get('role');
         var isGameStartedO = await DB.getObjectData('isGameStarted');
 
-        if(isGameStartedO[0].isGameStarted) return sendReactCollector(client, msg.channel, `Please finish the game!`);
-        else if(roleGame.length===0) return sendReactCollector(client, msg.channel, 'Roles haven\'t been set!');
+        if(roleGame.length===0) return sendReactCollector(client, msg.channel, 'Roles haven\'t been set!');
         
         const embed = new MessageEmbed();
         embed.setTitle("Roles: ");

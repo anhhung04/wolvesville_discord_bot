@@ -22,14 +22,13 @@ module.exports={
             vote.push(i.values[0]);
 
             if(vote.length===playersID.length){
-                collector.stop('result');
-                return message.delete();
+                return collector.stop('result');
             }
             
             await DB.update('vote', vote);
         };
          
-        sendSelectMenu(client, msg.channel, `Vote:`, Fields, playersID, callBack, false);
+        await sendSelectMenu(client, msg.channel, `Vote:`, Fields, playersID, callBack, false);
 
     }
 }

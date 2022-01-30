@@ -72,13 +72,13 @@ module.exports={
             let messGun = await msg.channel.send('gunner_turn');
             return messGun.delete();
         }else if(roleDie==='🤡'){
-            sendReactCollector(client, msg.channel, `${personDie} is fool! He wins!`);
+            await sendReactCollector(client, msg.channel, `${personDie} is fool! He wins!`);
 
             let messFool = await msg.channel.send('end');
             return messFool.delete();
         }
         else{
-            killPerson(personDie);
+            await killPerson(personDie);
 
             let roleGame = await DB.get('prRole');
 
@@ -100,7 +100,7 @@ module.exports={
                 return sendReactCollector(client, msg.channel, 'The villagers win!');
             }
         
-            sendReactCollector(client, msg.channel, `${personDie} was dead`);
+            await sendReactCollector(client, msg.channel, `${personDie} was dead`);
         }
         let newIndex = indexDay + dayNightDay;
         let newDayNight = (dayNightDay+1)%2;

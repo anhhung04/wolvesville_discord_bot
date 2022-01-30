@@ -18,11 +18,11 @@ module.exports={
             let roleGame = await DB.get('prRole');
             let numsWolf = 0;
             
-            killPerson(i.values[0]);
+            await killPerson(i.values[0]);
             
-            sendReactCollector(client, msg.channel, `${i.values[0]} was shot`);
+            await sendReactCollector(client, msg.channel, `${i.values[0]} was shot`);
 
-            sendReactCollector(client, msg.channel, `${i.user.username} died`);
+            await sendReactCollector(client, msg.channel, `${i.user.username} died`);
             
             for(let i=0; i< roleGame.length;i++){
                 if(roleGame[i]==='🐺') numsWolf++;
@@ -40,15 +40,13 @@ module.exports={
                 return sendReactCollector(client, msg.channel, 'The villagers win!');
             }
 
-            collector.stop('next');
-
-            return mess.delete();
+            return collector.stop('next');
         };
 
         sendReactCollector(client, msg.channel, `${roles['🔫']} turn`);
          
         killPerson(playersID[indexOut]);
 
-        sendSelectMenu(client, msg.channel, `Who does ${roles['🔫']} want to shoot?`, fields, playersID[indexOut], callBack, false); 
+        sendSelectMenu(client, msg.channel, `Who does ${roles['🔫']} want to shoot?`, fields, playersID[indexOut], callBack); 
     }
 };

@@ -1,6 +1,6 @@
 const { MessageActionRow, MessageEmbed, MessageSelectMenu } = require('discord.js');
 
-module.exports = async function(client, channel,title, fieldsSelect, userIds, callBack,deleteMessage = true, time=99999, role){
+module.exports = async function(client, channel,title, fieldsSelect, userIds, callBack,deleteMessage = true, addField=true, addOption=true){
     try{
         const embed = new MessageEmbed();
         embed.setTitle(title);
@@ -12,18 +12,19 @@ module.exports = async function(client, channel,title, fieldsSelect, userIds, ca
         var [...fields]=fieldsSelect;
 
         var addField = fields.every(field => field.name);
-
+        
         if(fields){
             if(addField){
                 embed.addFields(fields);
             }
-
-            row.addComponents(
-				new MessageSelectMenu()
-					.setPlaceholder('Nothing selected')
-                    .setCustomId('select')
-					.addOptions(fields)
-			);
+            if(addOption){
+                row.addComponents(
+                    new MessageSelectMenu()
+                        .setPlaceholder('Nothing selected')
+                        .setCustomId('select')
+                        .addOptions(fields)
+                );
+            }
         }
 
         let mess = await channel.send({ embeds: [embed], components: [row] });
@@ -47,9 +48,6 @@ module.exports = async function(client, channel,title, fieldsSelect, userIds, ca
 			if(reason!=='messageDelete'&&reason!=='time'){
                 let message1 = await channel.send(reason);
                 return message1.delete();
-            }else if(reason==='time'){
-                let message2 = await channel.send(`next_turn ${role}`);
-                return message2.delete();
             }
 		});
 

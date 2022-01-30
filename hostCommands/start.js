@@ -70,7 +70,7 @@ module.exports={
                     label: member.user.username
                 });
             }
-            sendReactCollector(client, member, 'Your role (React 👌 to delete): ', {name: roles[roleGame[i]], value: roleGame[i], inline: true}, ['👌'], playersID[i]);
+            await sendReactCollector(client, member, 'Your role (React 👌 to delete): ', {name: roles[roleGame[i]], value: roleGame[i], inline: true}, ['👌'], playersID[i]);
         }
 
         await DB.update('players', players);
@@ -80,7 +80,7 @@ module.exports={
         for(let i=0; i< players.length;i++){
             if(roleGame[i]==='🐺'){
                 let member = await guild.members.cache.get(playersID[i]);
-                sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
+                await sendReactCollector(client, member, 'Wolves (React 👌 to delete): ', wolfFields, ['👌'], playersID[i]);
             }
         }
          

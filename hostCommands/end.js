@@ -13,6 +13,9 @@ module.exports={
             if(!member){
                 continue;
             }
+            if(member.voice.channel){
+                member.voice.setDeaf(false);
+            }
             wolfChannel.permissionOverwrites.edit(member, { VIEW_CHANNEL: false, SEND_MESSAGES:false});
         }
         

@@ -62,15 +62,14 @@ module.exports={
                     await DB.update('die', diePer);
                 }
                 
-                collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
-                return mess.delete();
+                return collector.stop(`next_turn ${roles['🐺'].toLowerCase()}`);
             }else{
                 await DB.update('die', box);
             }
         };
 
-        sendReactCollector(client, msg.channel, `${roles['🐺']} turn`);
+        await sendReactCollector(client, msg.channel, `${roles['🐺']} turn`);
          
-        sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, usersId, callBack, false);     
+        await sendSelectMenu(client, msg.channel, `Who do ${roles['🐺']} want to kill tonight?`, fields, usersId, callBack, false);     
     }
 };

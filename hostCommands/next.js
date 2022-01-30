@@ -55,9 +55,9 @@ module.exports={
                         break;
                     }
                 }
-                let messageNext = await msg.channel.send(`next_turn`);
-                messageNext.delete();
-                
+                // let messageNext = await msg.channel.send(`next_turn`);
+                // messageNext.delete();
+
                 break;
             }case 1:{
                 playersID.forEach(async function(id){
@@ -72,17 +72,16 @@ module.exports={
                 const die = await DB.get('die');
                 
                 let shield = await DB.get('shield');
-                
-                let numsWolf = 0;
-    
-                for(let i=0; i< roleGame.length;i++){
-                    if(roleGame[i]==='🐺') numsWolf++;
-                }
+
+                const heal = await DB.getObjectData('witchHealPotions');
 
                 if(die.length===0&&roleGame.includes('🛡️')){
-                    sendReactCollector(client, msg.channel, `${shield[0]} was protected by bodyguard last night!`);
+                    await sendReactCollector(client, msg.channel, `${shield[0]} was protected by bodyguard last night!`);
                 }else if(die.length===0&&!roleGame.includes('🛡️')){
-                    sendReactCollector(client, msg.channel, `Everybody are safe...`);
+                    await sendReactCollector(client, msg.channel, `Everybody are safe...`);
+                }
+                else if(die.length===0&&!heal){
+                    await sendReactCollector(client, msg.channel, `The witch used heal potion`);
                 }
                 else{
                     let index = players.indexOf(die[0]);
@@ -93,18 +92,26 @@ module.exports={
                         return messGun.delete();
                     }
 
-                    sendReactCollector(client, msg.channel, `${shield[0]?shield[0]:die[0]} was killed by wolves!`);
+                    await sendReactCollector(client, msg.channel, `${die[0]?die[0]:'No one'} was killed by wolves!`);
 
-                    killPerson(die[0]);
+                    await killPerson(die[0]);
                 }
-
                 if(mustDie.length>0){
-                    killPerson(mustDie[0]);
+                    await killPerson(mustDie[0]);
 
-                    sendReactCollector(client, msg.channel, `${mustDie[0]} was killed by witch!`);
+                    await sendReactCollector(client, msg.channel, `${mustDie[0]} was killed by witch!`);
                 }
-                
-                if(numsWolf>= players.length/2){
+
+                const newPlayers = await DB.get('players');
+                const newRoleGame = await DB.get('prRole');
+
+                let numsWolf = 0;
+    
+                for(let i=0; i< newRoleGame.length;i++){
+                    if(newRoleGame[i]==='🐺') numsWolf++;
+                }
+
+                if(numsWolf >= newPlayers.length/2){
                     let mess1 = await msg.channel.send('end');
                     mess1.delete();
                     
@@ -116,16 +123,16 @@ module.exports={
                     return sendReactCollector(client, msg.channel, 'The villagers win!');
                 }
 
-                sendReactCollector(client, msg.channel, `Time to argue!`);
-
-                const fields = await DB.getObjectData('fields');
-
-                sendReactCollector(client, msg.channel, 'Villagers', fields);
-
                 await DB.update('mustDie',[]);
                 await DB.update('die', []);
                 await DB.update('shield', []); 
-                 
+
+                const fields = await DB.getObjectData('fields');
+
+                await sendReactCollector(client, msg.channel, `Time to argue!`);
+
+                await sendReactCollector(client, msg.channel, `Villagers: `, fields);
+                
                 setTimeout(()=>{
                     sendReactCollector(client, msg.channel, `10 seconds left`);
                     setTimeout(()=>{
