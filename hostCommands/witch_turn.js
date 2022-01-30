@@ -60,7 +60,7 @@ module.exports={
             }
         }else{
             if(heal){
-                await sendSelectMenuDie(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],'🧙‍♀️');
+                await sendSelectMenuDie(client, msg.channel, `${die[0]} died! Would ${roles['🧙‍♀️']} like to revive him?`, [{label: '👍', value: '👍'}, {label: '👎', value: '👎'}],roles['🧙‍♀️']);
             }
             if(kill){
                 await sendSelectMenu(client, msg.channel, `Who does ${roles['🧙‍♀️']} want to kill`, fields,' 🧙‍♀️');

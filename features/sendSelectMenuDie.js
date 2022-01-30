@@ -1,4 +1,5 @@
 const wait = require('util').promisify(setTimeout);
+const { MessageActionRow, MessageEmbed, MessageSelectMenu } = require('discord.js');
 
 module.exports=async function(client, channel, title, fields, role, addField=true, addOption=true){
     const embed = new MessageEmbed();

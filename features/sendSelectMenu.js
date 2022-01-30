@@ -34,7 +34,7 @@ module.exports = async function(client, channel,title, fieldsSelect, userIds, ca
             return userIds.includes(i.user.id) && !i.user.bot;
         };
 
-        const collector = mess.createMessageComponentCollector({filter, componentType: 'SELECT_MENU', time: time });
+        const collector = mess.createMessageComponentCollector({filter, componentType: 'SELECT_MENU', time: 99999 });
 
         collector.on('collect', i => {
 			callBack(i, collector, mess);

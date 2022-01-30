@@ -27,7 +27,7 @@ module.exports={
         };
         
         if(indexOut===-1){
-            await sendSelectMenuDie(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, '🛡️');
+            await sendSelectMenuDie(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, roles['🛡️']);
         }else{
             await sendSelectMenu(client, msg.channel, `Who does ${roles['🛡️']} want to protect tonight?`, fields, [playersID[indexOut]], callBack, true); 
         }
